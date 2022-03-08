@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
 
-app.get('/videos', (req, res) => {
-    //Send back videos data
-});
-
-app.post('/videos', (req, res) => {
+app.route('/videos')
+    .get((req, res) => {
+        //Send back videos data
+    })
+    .post((req, res) => {
     //Create a new video from upload form
 });
 
