@@ -1,26 +1,16 @@
 const express = require('express');
 const app = express();
+const cors = require("cors");
 
-app.route('/videos')
-    .get((req, res) => {
-        //Send back videos data
-    })
-    .post((req, res) => {
-    //Create a new video from upload form
-});
-
-app.get('/videos/:id', (req, res) => {
-    //Send back data for specific video using req.params
-});
-
-//Diving deeper routes
-app.post('/videos/:id/comments', (req, res) => {
-
-})
-
-app.delete('/videos/:id/comments/:commendId', (req, res) => {
-
-})
+//serves static files from our public directory
+app.use(express.static('./public'));
+//allows us access request.body in our POST requests (replaces body-parser)
+app.use(express.json())
+//allow cross origin resource sharing
+app.use(cors());
+//Routes
+const videoRoutes = require('./routes/videos');
+app.use('/videos', videoRoutes);
 
 app.listen(8080, () => {
     console.log('listening on port 8080')
