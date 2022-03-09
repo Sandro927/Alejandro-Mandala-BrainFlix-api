@@ -10,8 +10,16 @@ const getVideos = () => {
 
 router.route('/')
     .get((req, res) => {
-        //get videos
-        res.status(200).json(getVideos())
+        let formattedVideos = getVideos()[0].videos
+        .map(video =>{
+            return {
+                "id": video.id,
+                "title": video.title,
+                "channel": video.channel,
+                "image": video.image
+            }
+        })
+        res.status(200).json(formattedVideos)
     });
     
 
