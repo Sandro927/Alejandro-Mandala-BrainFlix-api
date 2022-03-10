@@ -1,6 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require("cors");
+
+const PORT = process.env.PORT || 8080;
 
 //serves static files from our public directory
 app.use(express.static('./public'));
@@ -12,6 +15,6 @@ app.use(cors());
 const videoRoutes = require('./routes/videos');
 app.use('/videos', videoRoutes);
 
-app.listen(8080, () => {
-    console.log('listening on port 8080')
+app.listen(PORT, () => {
+    console.log('listening on port: ' + PORT);
 }) 
