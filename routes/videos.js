@@ -23,13 +23,13 @@ const fillerData = {
 }
 
 const fetchData = () => {
-    const videos = fs.readFileSync('./data/video-details.json')
+    const videos = fs.readFileSync('./data/video-details.json');
     return JSON.parse(videos);
 }
 
 
 const createData = (videoData) => {
-    fs.writeFileSync('./data/video-details.json', JSON.stringify(videoData))
+    fs.writeFileSync('./data/video-details.json', JSON.stringify(videoData));
 }
 
 router.route('/')
@@ -42,8 +42,8 @@ router.route('/')
                     channel: video.channel,
                     image: video.image
                 }
-            })
-        res.status(200).json(formattedVideos)
+            });
+        res.status(200).json(formattedVideos);
     })
     .post((req, res) => {
         let videoData = fetchData();
@@ -60,14 +60,12 @@ router.route('/')
             timestamp: fillerData.timestamp,
             comments: fillerData.comments
         }
-
         videoData.push(newVideoData);
         createData(videoData);
-
         res.status(201).send({
             data: videoData,
             status: "Success"
-        })
+        });
     });
 
 
@@ -96,9 +94,9 @@ router.route('/:id')
                         }
                     })
                 }
-        })
-    res.status(200).json(formattedVideoData.find(video => video.id === req.params.id))
-});
+            });
+        res.status(200).json(formattedVideoData.find(video => video.id === req.params.id));
+    });
 
 router.route('/:id/comments')
     .post((req, res) => {
@@ -108,7 +106,7 @@ router.route('/:id/comments')
             likes: 0,
             timestamp: Date.now(),
             id: uuidv4()
-        }
+        };
         let videoData = fetchData();
         const currentVideoIndex = videoData.findIndex(video => video.id === req.params.id);
         videoData[currentVideoIndex].comments.push(newComment);
@@ -119,13 +117,23 @@ router.route('/:id/comments')
 router.route('/:id/comments/:commentId')
     .delete((req, res) => {
         let videoData = fetchData();
-        let currentVideotData = videoData.find(video => video.id === req.params.id);
         const currentVideoIndex = videoData.findIndex(video => video.id === req.params.id);
+        let currentVideotData = videoData[currentVideoIndex];
         const newComments = currentVideotData.comments.filter(comment => comment.id !== req.params.commentId);
         currentVideotData.comments = newComments;
-        videoData[currentVideoIndex] = currentVideotData
+        videoData[currentVideoIndex] = currentVideotData;
         createData(videoData);
-        res.status(200).send('deleted')
+        res.status(200).send('deleted');
+    });
+
+router.route('/:id/likes')
+    .put((req, res) => {
+        let videoData = fetchData();
+        const currentVideoIndex = videoData.findIndex(video => video.id === req.params.id);
+        const newLikes = Number(videoData[currentVideoIndex].likes.replace(",", "")) + 1;
+        videoData[currentVideoIndex].likes = newLikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        createData(videoData);
+        res.status(200).send('likes incremented');
     });
 
 
