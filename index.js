@@ -6,7 +6,8 @@ const cors = require("cors");
 const PORT = process.env.PORT || 8080;
 
 //serves static files from our public directory
-app.use(express.static('./public'));
+app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static('uploads'));
 //allows us access request.body in our POST requests (replaces body-parser)
 app.use(express.json());
 //allow cross origin resource sharing

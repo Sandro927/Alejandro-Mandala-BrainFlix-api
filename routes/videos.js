@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const fs = require("fs");
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const multer  = require('multer');
+const upload = multer({dest: '../public/images'})
+
+
 
 const fillerData = {
     channel: "My New Channel",
@@ -45,8 +50,9 @@ router.route('/')
             });
         res.status(200).json(formattedVideos);
     })
-    .post((req, res) => {
+    .post(upload.single('videoImage'), (req, res, next) => {
         let videoData = fetchData();
+        console.log(req.file);
         const newVideoData = {
             id: uuidv4(),
             title: req.body.title,
@@ -123,7 +129,7 @@ router.route('/:id/comments/:commentId')
         currentVideotData.comments = newComments;
         videoData[currentVideoIndex] = currentVideotData;
         createData(videoData);
-        res.status(200).send('deleted');
+        res.status(204).send('deleted');
     });
 
 router.route('/:id/likes')
@@ -133,7 +139,7 @@ router.route('/:id/likes')
         const newLikes = Number(videoData[currentVideoIndex].likes.replace(",", "")) + 1;
         videoData[currentVideoIndex].likes = newLikes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         createData(videoData);
-        res.status(200).send('likes incremented');
+        res.status(202).send('likes incremented');
     });
 
 
